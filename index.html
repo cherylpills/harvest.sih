@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6f8f3" />
+  <title>HarvestFlow | Smart procurement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+e2YhZf3b4g+g0p3rj0kQxQbQ4p+v2yVYv1p0u5r0=" crossorigin=""/>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="location-picker.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><span></span><span></span><span></span></div>
+        <div><strong>HarvestFlow</strong><small data-i18n="brandSub">Smart procurement</small></div>
+      </div>
+      <div class="role-switcher">
+        <span data-i18n="viewingAs">Viewing as</span>
+        <button class="role-button" id="roleButton"><span class="avatar avatar-small">GA</span><span id="roleLabel">Guest account</span><span class="chevron">⌄</span></button>
+        <div class="role-menu" id="roleMenu">
+          <button data-role="farmer">Farmer portal</button>
+          <button data-role="staff">Centre staff</button>
+          <button data-role="admin">Administrator</button>
+        </div>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <p class="nav-label" data-i18n="overview">Overview</p>
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">⌂</span><span data-i18n="dashboard">Dashboard</span></button>
+        <button class="nav-item" data-view="booking"><span class="nav-icon">▣</span><span data-i18n="bookSlot">Book a slot</span><span class="nav-badge">0</span></button>
+        <button class="nav-item" data-view="queue"><span class="nav-icon">≡</span><span data-i18n="myQueue">My queue</span></button>
+        <p class="nav-label nav-label-spaced" data-i18n="activity">Activity</p>
+        <button class="nav-item" data-view="procurement"><span class="nav-icon">◒</span><span data-i18n="procurement">Procurement</span></button>
+        <button class="nav-item" data-view="payments"><span class="nav-icon">₹</span><span data-i18n="payments">Payments</span></button>
+        <button class="nav-item" data-view="history"><span class="nav-icon">↺</span><span data-i18n="history">History</span></button>
+        <button class="nav-item" data-view="notifications"><span class="nav-icon">♧</span><span data-i18n="notifications">Notifications</span><span class="nav-badge soft">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span><span data-i18n="settings">Settings</span></button>
+        <div class="help-box"><span class="help-icon">?</span><div><strong data-i18n="needHelp">Need help?</strong><small data-i18n="supportTeam">Our support team is here</small></div><button aria-label="Open help">↗</button></div>
+        <div class="profile-row"><span class="avatar">GA</span><div><strong>Guest account</strong><small>Farmer ID · No data</small></div><button aria-label="Profile options">•••</button></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb"><span data-i18n="home">Home</span><span>/</span><strong id="pageTitle" data-i18n="dashboard">Dashboard</strong></div>
+        <div class="top-actions">
+          <div class="language-control"><span>文A</span><select id="languageSelect" aria-label="Language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option></select></div>
+          <button class="icon-button" id="themeToggle" aria-label="Toggle dark mode">☼</button>
+          <button class="notification-button" data-view="notifications" aria-label="Notifications"><span>♧</span><i></i></button>
+          <span class="avatar avatar-top">GA</span>
+        </div>
+      </header>
+
+      <div class="page-container">
+        <section class="view active-view" id="dashboardView">
+          <div class="page-heading"><div><p class="eyebrow" data-i18n="goodMorning"></p><h1 data-i18n="welcome">Good morning</h1><p data-i18n="dashboardIntro">Here’s your procurement journey at a glance.</p></div><button class="primary-button" data-view="booking"><span>＋</span><span data-i18n="bookNewSlot">Book new slot</span></button></div>
+          <div class="alert-banner empty"><div class="alert-icon">!</div><div><strong>No upcoming appointment</strong><p class="small-muted">You have no scheduled appointments.</p></div></div>
+          <div class="stats-grid">
+            <article class="stat-card accent-card"><div class="card-top"><span data-i18n="upcomingSlot">Upcoming slot</span><span class="card-symbol">↗</span></div><strong>No upcoming appointment</strong><p class="small-muted">—</p><div class="card-foot"><span class="status-dot"></span><span class="small-muted">No appointment</span><span class="time-label"></span></div></article>
+            <article class="stat-card"><div class="card-top"><span data-i18n="yourQueue">Your queue</span><span class="card-symbol yellow-symbol">≡</span></div><strong>No live queue data</strong><p class="small-muted">No live queue data</p><div class="card-foot"><span class="status-dot yellow"></span><span class="small-muted">—</span><span class="time-label"></span></div></article>
+            <article class="stat-card"><div class="card-top"><span data-i18n="procurementStatus">Procurement status</span><span class="card-symbol blue-symbol">◒</span></div><strong data-i18n="qualityCheck">Quality check</strong><p class="small-muted">No active procurement</p><div class="card-foot"><span class="status-dot blue"></span><span class="small-muted">—</span><span class="time-label"></span></div></article>
+            <article class="stat-card"><div class="card-top"><span data-i18n="paymentStatus">Payment status</span><span class="card-symbol pink-symbol">₹</span></div><strong class="small-muted">No payment due</strong><p data-i18n="paymentDue">Expected payment</p><div class="card-foot"><span class="status-dot purple"></span><span class="small-muted">—</span><span class="time-label"></span></div></article>
+          </div>
+          <div class="content-grid">
+            <article class="panel journey-panel"><div class="panel-heading"><div><h2 data-i18n="journeyTitle">Your procurement journey</h2><p class="small-muted">No active procurement</p></div><button class="text-button" data-view="procurement" data-i18n="viewDetails">View details ↗</button></div><div class="journey"><div class="journey-line"><span></span></div><div class="journey-step"><span class="step-icon">◌</span><div><strong data-i18n="booked">Booked</strong><small class="small-muted">No data</small></div></div><div class="journey-step"><span class="step-icon">○</span><div><strong data-i18n="arrived">Farmer arrived</strong><small class="small-muted">No data</small></div></div><div class="journey-step"><span class="step-icon">○</span><div><strong data-i18n="qualityCheck">Quality check</strong><small class="small-muted">No data</small></div></div><div class="journey-step"><span class="step-icon">○</span><div><strong data-i18n="procurementComplete">Procurement complete</strong><small class="small-muted">No data</small></div></div><div class="journey-step"><span class="step-icon">○</span><div><strong data-i18n="paymentComplete">Payment complete</strong><small class="small-muted">No data</small></div></div></div></article>
+            <article class="panel queue-panel"><div class="panel-heading"><div><h2 data-i18n="liveQueue">Live queue</h2><p class="small-muted">No live queue data</p></div><span class="live-pill"><i></i><span data-i18n="live">Live</span></span></div><div class="queue-number"><small data-i18n="nowServing">Now serving</small><strong class="small-muted">No live queue data</strong><div class="queue-meter"><span style="width:0%"></span></div><div class="queue-meta"><span><b class="small-muted">—</b> <em data-i18n="ahead">ahead of you</em></span><span><b class="small-muted">—</b> <em data-i18n="estimatedWait">estimated wait</em></span></div></div><button class="secondary-button full-button" data-view="queue" data-i18n="openLiveQueue">Open live queue →</button></article>
+          </div>
+          <div class="lower-grid"><article class="panel centre-panel"><div class="panel-heading"><div><h2 data-i18n="nearbyCentres">Nearby procurement centres</h2><p data-i18n="chooseLessCrowded">Choose a less crowded centre</p></div><button class="text-button" data-view="booking" data-i18n="seeAll">See all ↗</button></div><div class="centre-row no-data"><div style="padding:12px; color:var(--muted); text-align:center; width:100%;"><strong>No procurement centres available</strong><div class="small-muted" style="margin-top:6px">Centres will appear here when available.</div></div></div></article><article class="panel notification-panel"><div class="panel-heading"><div><h2 data-i18n="recentUpdates">Recent updates</h2><p data-i18n="last24">Your latest notifications</p></div><button class="text-button" data-view="notifications" data-i18n="viewAll">View all</button></div></article></div>
+        </section>
+
+        <section class="view" id="bookingView"><div class="page-heading"><div><p class="eyebrow">SLOT MANAGEMENT</p><h1 data-i18n="bookSlot">Book a slot</h1><p data-i18n="bookingIntro">Choose a centre and time that works for you.</p></div></div><div class="booking-layout"><div class="panel booking-form"><div class="form-progress"><span class="active">1</span><i></i><span>2</span><i></i><span>3</span></div><div class="form-step"><p class="step-kicker">STEP 1 OF 3</p><h2 data-i18n="selectCentre">Select procurement centre</h2><div class="search-input"><span>⌕</span><input placeholder="Search centres" data-i18n-placeholder="searchCentres" /></div><label class="centre-option selected"><input type="radio" name="centre" checked /><span class="radio-dot"></span><span><strong>Pune Procurement Centre</strong><small>Market Yard Road · 2.4 km away</small></span><em class="crowd low"><i></i>Low crowd</em></label><label class="centre-option"><input type="radio" name="centre" /><span class="radio-dot"></span><span><strong>Hadapsar Collection Hub</strong><small>Solapur Road · 5.8 km away</small></span><em class="crowd moderate"><i></i>Moderate</em></label><label class="centre-option"><input type="radio" name="centre" /><span class="radio-dot"></span><span><strong>Kharadi Grain Centre</strong><small>Nagar Road · 8.1 km away</small></span><em class="crowd high"><i></i>High crowd</em></label><button class="primary-button full-button" id="continueBooking" data-i18n="continue">Continue to date & time →</button></div></div><aside class="panel recommendation"><span class="spark">✦</span><p class="eyebrow">SMART RECOMMENDATION</p><h2 data-i18n="recommendedSlot">The calmest window is waiting.</h2><p data-i18n="recommendationText">Based on current bookings, we recommend 2:00 PM – 2:30 PM. You’ll spend less time waiting.</p><div class="recommendation-time"><strong>2:00 – 2:30</strong><span data-i18n="tomorrow">Tomorrow, 28 Aug</span></div><button class="secondary-button full-button" id="useRecommendation" data-i18n="useThisSlot">Use this slot</button></aside></div></section>
+
+        <section class="view" id="queueView"><div class="page-heading"><div><p class="eyebrow">PUNE PROCUREMENT CENTRE · LIVE</p><h1 data-i18n="myQueue">My queue</h1><p data-i18n="queueIntro">Your place in line, updated in real time.</p></div><span class="live-pill large"><i></i><span data-i18n="liveUpdates">Live updates</span></span></div><div class="queue-hero panel"><div class="queue-hero-copy"><p class="eyebrow" data-i18n="yourDigitalToken">YOUR DIGITAL TOKEN</p><div class="big-token">A-0</div><p data-i18n="keepTokenReady">Keep this token ready when you arrive at the centre.</p></div><div class="queue-now"><small data-i18n="nowServing">Now serving</small><strong>A-0</strong><div class="queue-meter"><span style="width:0%"></span></div><div class="queue-meta"><span><b>0</b> <em data-i18n="ahead">ahead of you</em></span><span><b>0 min</b> <em data-i18n="estimatedWait">estimated wait</em></span></div></div></div><div class="content-grid"><article class="panel"><div class="panel-heading"><div><h2 data-i18n="queueTimeline">Queue timeline</h2><p data-i18n="automaticallyUpdated">Automatically updated by centre staff</p></div></div><div class="timeline"><div class="timeline-item complete"><span>✓</span><div><strong data-i18n="bookingConfirmed">Booking confirmed</strong><small>26 Aug · 09:42 AM</small></div></div><div class="timeline-item current"><span>●</span><div><strong data-i18n="waitingInQueue">Waiting in queue</strong><small data-i18n="youAreHere">You are here</small></div></div><div class="timeline-item"><span>○</span><div><strong data-i18n="calledToCounter">Called to counter</strong><small data-i18n="notificationWhenCalled">You’ll get a notification when it’s your turn</small></div></div><div class="timeline-item"><span>○</span><div><strong data-i18n="atCounter">At counter</strong><small>Expected around 00:00</small></div></div></div></article><article class="panel token-panel"><div class="qr-placeholder"><div class="qr-inner">▦<small>A-0</small></div></div><h2 data-i18n="digitalToken">Digital token</h2><p>PRC26032-1027</p><button class="secondary-button full-button" data-i18n="downloadToken">↓ Download token</button></article></div></section>
+
+        <section class="view placeholder-view" id="procurementView"><div class="page-heading"><div><p class="eyebrow">TRACKING</p><h1 data-i18n="procurement">Procurement</h1><p data-i18n="procurementIntro">Follow every stage from arrival to acceptance.</p></div></div><article class="panel detail-panel"><div class="detail-header"><div class="crop-avatar">W</div><div><h2>Wheat procurement</h2><p>Booking PRC26032-1027 · Pune Procurement Centre</p></div><span class="status-badge blue-badge" data-i18n="qualityCheck">Quality check</span></div><div class="wide-progress"><span></span><span></span><span></span><span></span><span></span></div><div class="progress-labels"><span data-i18n="arrived">Farmer arrived</span><span data-i18n="weighing">Weighing</span><span data-i18n="qualityCheck">Quality check</span><span data-i18n="accepted">Accepted</span><span data-i18n="complete">Complete</span></div><div class="detail-stats"><div><small data-i18n="submitted">Submitted</small><strong>0 kg</strong></div><div><small data-i18n="accepted">Accepted</small><strong>0 kg</strong></div><div><small data-i18n="quality">Quality grade</small><strong>0</strong></div><div><small data-i18n="date">Date</small><strong>28 Aug 2026</strong></div></div></article></section>
+        <section class="view placeholder-view" id="paymentsView"><div class="page-heading"><div><p class="eyebrow">TRANSPARENT PAYMENTS</p><h1 data-i18n="payments">Payments</h1><p data-i18n="paymentsIntro">Know exactly when your money is on its way.</p></div></div><div class="payment-hero panel"><div><p class="eyebrow" data-i18n="expectedPayment">EXPECTED PAYMENT</p><h2>₹0</h2><p><span class="status-dot purple"></span> <span data-i18n="processing">Processing</span> · <span data-i18n="estimatedBy">Estimated by 30 Aug 2026</span></p></div><div class="payment-note">Payment follows quality approval and procurement completion.</div></div></section>
+        <section class="view placeholder-view" id="historyView"><div class="page-heading"><div><p class="eyebrow">YOUR RECORDS</p><h1 data-i18n="history">History</h1><p data-i18n="historyIntro">A clear record of your past procurements.</p></div><button class="secondary-button" data-i18n="downloadRecords">↓ Download records</button></div><article class="panel table-panel"><div class="table-row table-head"><span data-i18n="date">Date</span><span data-i18n="crop">Crop</span><span data-i18n="quantity">Quantity</span><span data-i18n="centre">Centre</span><span data-i18n="status">Status</span></div>
+          <div class="table-row table-empty">
+            <div style="grid-column:1 / -1; padding:28px 22px; text-align:center; color:var(--muted);">
+              <strong>No history available</strong>
+              <p style="margin:8px 0 0;">Your completed procurements will appear here.</p>
+            </div>
+          </div>
+        </article></section>
+        <section class="view placeholder-view" id="notificationsView"><div class="page-heading"><div><p class="eyebrow">STAY IN THE LOOP</p><h1 data-i18n="notifications">Notifications</h1><p data-i18n="notificationsIntro">The important moments, right when they happen.</p></div><button class="text-button" data-i18n="markAllRead">Mark all as read</button></div><article class="panel notifications-list"></article></section>
+        <section class="view placeholder-view" id="settingsView"><div class="page-heading"><div><p class="eyebrow">PREFERENCES</p><h1 data-i18n="settings">Settings</h1><p data-i18n="settingsIntro">Make HarvestFlow work the way you do.</p></div></div><div class="settings-grid"><article class="panel settings-panel"><div class="setting-icon">文A</div><div><h2 data-i18n="language">Language</h2><p data-i18n="languageSub">Change the language across the whole app.</p></div><select id="settingsLanguage"><option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option></select></article><article class="panel settings-panel"><div class="setting-icon">☼</div><div><h2 data-i18n="appearance">Appearance</h2><p data-i18n="appearanceSub">Choose a comfortable look for your screen.</p></div><div class="segmented"><button class="active" data-theme-choice="light">☼ <span data-i18n="light">Light</span></button><button data-theme-choice="dark">◐ <span data-i18n="dark">Dark</span></button></div></article><article class="panel settings-panel"><div class="setting-icon">♧</div><div><h2 data-i18n="notifications">Notifications</h2><p data-i18n="notificationsSub">Get reminders about your appointments.</p></div><label class="toggle"><input type="checkbox" checked /><span></span></label></article></div></section>
+      </div>
+      <footer><span>HarvestFlow · Smart procurement for every farmer</span><span>Problem statement 26032</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status">Booking preferences saved</div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j8g3bTg4v+v2e5Z1kQxQbQ4p+v2yVYv1p0u5r0=" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>
